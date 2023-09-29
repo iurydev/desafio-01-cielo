@@ -1,0 +1,33 @@
+# Arquivos de configuração do IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Arquivos temporários
+*.log
+*.swp
+
+# Logs
+logs/
+
+# Arquivos gerados pelo Spring Boot
+spring-boot-starter-*/target/
+spring-boot-starter-*/build/
+
+# Arquivos de configuração do Spring Boot
+application*.yml
+application*.properties
+
+# Dependências do Maven
+mvnw
+mvnw.cmd
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+.gradle/
+.mvn/
