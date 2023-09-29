@@ -3,11 +3,13 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 
+@Getter
 @Entity
 public class PessoaJuridica extends Cliente {
 
@@ -44,40 +46,20 @@ public class PessoaJuridica extends Cliente {
     public PessoaJuridica() {
     }
 
-    public String getRazaoSocial() {
-        return razaoSocial;
-    }
-
     public void setRazaoSocial(String razaoSocial) {
         this.razaoSocial = razaoSocial;
-    }
-
-    public String getCnpj() {
-        return cnpj;
     }
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
 
-    public String getNomeContato() {
-        return nomeContato;
-    }
-
     public void setNomeContato(String nomeContato) {
         this.nomeContato = nomeContato;
     }
 
-    public String getCpfContato() {
-        return cpfContato;
-    }
-
     public void setCpfContato(String cpfContato) {
         this.cpfContato = cpfContato;
-    }
-
-    public String getEmailContato() {
-        return emailContato;
     }
 
     public void setEmailContato(String emailContato) {

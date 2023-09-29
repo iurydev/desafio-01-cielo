@@ -3,9 +3,11 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
+@Getter
 @Entity
 public class PessoaFisica extends Cliente {
     @Column()
@@ -31,24 +33,12 @@ public class PessoaFisica extends Cliente {
     public PessoaFisica() {
     }
 
-    public String getNome() {
-        return nome;
-    }
-
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getCpf() {
-        return cpf;
     }
 
     public void setCpf(String cpf) {
