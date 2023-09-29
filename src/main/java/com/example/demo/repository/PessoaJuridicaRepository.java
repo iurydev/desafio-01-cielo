@@ -2,7 +2,6 @@ package com.example.demo.repository;
 
 import com.example.demo.model.PessoaJuridica;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 
 public interface PessoaJuridicaRepository extends JpaRepository<PessoaJuridica, Long> {
