@@ -1,14 +1,19 @@
 package com.example.demo.controler;
 import com.example.demo.model.PessoaFisica;
+import com.example.demo.model.TipoCliente;
 import com.example.demo.repository.PessoaFisicaRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cliente/pf")
@@ -20,49 +25,44 @@ public class PfController {
         this.pessoaFisicaRepository = pessoaFisicaRepository;
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<Optional<PessoaFisica>> getById(@PathVariable Long id) {
-        Optional<PessoaFisica> pessoaFisica;
-        try {
-            pessoaFisica = pessoaFisicaRepository.findById(id);
-            return new ResponseEntity<Optional<PessoaFisica>>(pessoaFisica, HttpStatus.OK);
-        } catch (NoSuchElementException nsee) {
-            return new ResponseEntity<Optional<PessoaFisica>>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @GetMapping
-    public ResponseEntity<List<PessoaFisica>> getAll() {
-        List<PessoaFisica> listaPf;
-        listaPf = pessoaFisicaRepository.findAll();
-        return new ResponseEntity<>(listaPf, HttpStatus.OK);
-    }
-
     @PostMapping()
-    public ResponseEntity<?> save(@Valid @RequestBody PessoaFisica pessoaFisica) {
-        pessoaFisicaRepository.save(pessoaFisica);
-        return new ResponseEntity<>(pessoaFisica, HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Optional<PessoaFisica>> deleteById(@PathVariable Long id) {
-        try {
-            pessoaFisicaRepository.deleteById(id);
-            return new ResponseEntity<Optional<PessoaFisica>>(HttpStatus.OK);
-        } catch (NoSuchElementException nsee) {
-            return new ResponseEntity<Optional<PessoaFisica>>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Optional<PessoaFisica>> cadastrar(@Valid @RequestBody PessoaFisica pessoaFisica,  HttpServletRequest request) {
+        // NOTE: Verifica existência do cliente
+        Optional<PessoaFisica> verificacaoCliente = pessoaFisicaRepository.findByCpf(pessoaFisica.getCpf());
+        if (verificacaoCliente.isPresent()) {
+            return new ResponseEntity("Cliente já cadastrado com o mesmo CPF!", HttpStatus.CONFLICT);
         }
+        // NOTE: Verifica tipo do cliente
+        String tipoClienteString = (String) request.getAttribute("tipoCliente");
+        TipoCliente tipoCliente = TipoCliente.valueOf(tipoClienteString.toUpperCase());
+        pessoaFisica.setTipoCliente(tipoCliente);
+
+        pessoaFisicaRepository.save(pessoaFisica);
+        return new ResponseEntity(pessoaFisica, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<PessoaFisica> update(@PathVariable Long id, @RequestBody PessoaFisica novosDadosPf) {
-        return pessoaFisicaRepository.findById(id).map(pessoaFisica -> {
-            pessoaFisica.setNome((novosDadosPf.getNome()));
-            pessoaFisica.setCpf((novosDadosPf.getCpf()));
-            pessoaFisica.setEmail((novosDadosPf.getEmail()));
-            pessoaFisica.setMcc((novosDadosPf.getMcc()));
-            PessoaFisica dadosPfAtualizados = pessoaFisicaRepository.save(pessoaFisica);
-            return ResponseEntity.ok().body(dadosPfAtualizados);
-        }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody @Valid PessoaFisica novosDadosPf, BindingResult bindingResult) {
+        //NOTE: Verifica erros de validação nos campos
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map((ObjectError t) -> t.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<PessoaFisica> pessoaFisica = pessoaFisicaRepository.findById(id);
+        if (pessoaFisica.isEmpty()) {
+            return new ResponseEntity("Cliente não encontrado!", HttpStatus.NOT_FOUND);
+        }
+
+        PessoaFisica pessoaFisicaAtualizada = pessoaFisica.get();
+        pessoaFisicaAtualizada.setNome(novosDadosPf.getNome());
+        pessoaFisicaAtualizada.setEmail(novosDadosPf.getEmail());
+        pessoaFisicaAtualizada.setMcc(novosDadosPf.getMcc());
+        pessoaFisicaRepository.saveAndFlush(pessoaFisicaAtualizada);
+        return ResponseEntity.ok().body(pessoaFisicaAtualizada);
     }
 }
