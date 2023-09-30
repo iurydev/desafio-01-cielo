@@ -1,12 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.br.CNPJ;
 
 
 @Getter
@@ -14,24 +9,14 @@ import org.hibernate.validator.constraints.br.CNPJ;
 public class PessoaJuridica extends Cliente {
 
     @Column(name = "razao_social")
-    @NotEmpty(message = "Campo RAZÃO SOCIAL é obrigatória")
-    @Length(max = 50, message = "A Razão Social deve ter no máximo 50 caracteres")
     String razaoSocial;
     @Column()
-    @NotEmpty(message = "Campo CNPJ é obrigatório")
-    @CNPJ(message = "CNPJ inválido")
     String cnpj;
     @Column(name = "nome_contato")
-    @NotEmpty(message = "Campo NOME DO CONTATO é obrigatório")
-    @Length(max = 50, message = "O Nome do contato deve ter no máximo 50 caracteres")
     String nomeContato;
     @Column(name = "cpf_contato")
-    @NotEmpty(message = "Campo CPF DO CONTATO é obrigatório")
-    @Pattern(regexp = "^[0-9]{11}$", message = "CPF do contato inválido")
     String cpfContato;
     @Column(name = "email_contato")
-    @NotEmpty(message = "Campo EMAIL DO CONTATO é obrigatório")
-    @Email(regexp = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$", message = "Email do contato inválido")
     String emailContato;
 
     public PessoaJuridica(TipoCliente tipoCliente, String mcc, String razaoSocial, String cnpj, String nomeContato, String cpfContato, String emailContato) {
@@ -44,6 +29,31 @@ public class PessoaJuridica extends Cliente {
     }
 
     public PessoaJuridica() {
+    }
+
+    public static PessoaJuridica fromDTO(PessoaJuridicaRequestDTO pessoaJuridicaRequestDTO) {
+        PessoaJuridica pessoaJuridica = new PessoaJuridica();
+        pessoaJuridica.setMcc(pessoaJuridicaRequestDTO.getMcc());
+        pessoaJuridica.setRazaoSocial(pessoaJuridicaRequestDTO.getRazaoSocial());
+        pessoaJuridica.setCnpj(pessoaJuridicaRequestDTO.getCnpj());
+        pessoaJuridica.setCpfContato(pessoaJuridicaRequestDTO.getCpfContato());
+        pessoaJuridica.setEmailContato(pessoaJuridicaRequestDTO.getEmailContato());
+        pessoaJuridica.setNomeContato(pessoaJuridicaRequestDTO.getNomeContato());
+        return pessoaJuridica;
+    }
+
+    public PessoaJuridicaResponseDTO toDTO() {
+        PessoaJuridicaResponseDTO pessoaJuridicaResponseDTO = new PessoaJuridicaResponseDTO();
+        pessoaJuridicaResponseDTO.setId(this.getId());
+        pessoaJuridicaResponseDTO.setMcc(this.getMcc());
+        pessoaJuridicaResponseDTO.setDataCadastro(this.getDataCadastro());
+        pessoaJuridicaResponseDTO.setTipoCliente(this.getTipoCliente());
+        pessoaJuridicaResponseDTO.setCnpj(this.getCnpj());
+        pessoaJuridicaResponseDTO.setCpfContato(this.getCpfContato());
+        pessoaJuridicaResponseDTO.setEmailContato(this.getEmailContato());
+        pessoaJuridicaResponseDTO.setNomeContato(this.getNomeContato());
+        pessoaJuridicaResponseDTO.setRazaoSocial(this.getRazaoSocial());
+        return pessoaJuridicaResponseDTO;
     }
 
     public void setRazaoSocial(String razaoSocial) {

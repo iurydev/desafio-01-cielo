@@ -1,26 +1,16 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Entity
 public class PessoaFisica extends Cliente {
     @Column()
-    @NotEmpty(message = "Campo NOME é obrigatório")
-    @Length(max = 50, message = "Campo nome deve ter no máximo 50 caracteres")
     String nome;
     @Column()
-    @NotEmpty(message = "Campo EMAIL é obrigatório")
-    @Email(regexp = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$", message = "Email inválido")
     String email;
     @Column()
-    @NotEmpty(message = "Campo CPF é obrigatório")
-    @Pattern(regexp = "^[0-9]{11}$", message = "CPF inválido")
     String cpf;
 
     public PessoaFisica(TipoCliente tipoCliente, String mcc, String nome, String email, String cpf) {
@@ -31,6 +21,27 @@ public class PessoaFisica extends Cliente {
     }
 
     public PessoaFisica() {
+    }
+
+    public static PessoaFisica fromDTO(PessoaFisicaRequestDTO pessoaFisicaRequestDTO) {
+        PessoaFisica pessoaFisica = new PessoaFisica();
+        pessoaFisica.setMcc(pessoaFisicaRequestDTO.getMcc());
+        pessoaFisica.setNome(pessoaFisicaRequestDTO.getNome());
+        pessoaFisica.setEmail(pessoaFisicaRequestDTO.getEmail());
+        pessoaFisica.setCpf(pessoaFisicaRequestDTO.getCpf());
+        return pessoaFisica;
+    }
+
+    public PessoaFisicaResponseDTO toDTO() {
+        PessoaFisicaResponseDTO pessoaFisicaResponseDTO = new PessoaFisicaResponseDTO();
+        pessoaFisicaResponseDTO.setId(this.getId());
+        pessoaFisicaResponseDTO.setMcc(this.getMcc());
+        pessoaFisicaResponseDTO.setNome(this.getNome());
+        pessoaFisicaResponseDTO.setEmail(this.getEmail());
+        pessoaFisicaResponseDTO.setCpf(this.getCpf());
+        pessoaFisicaResponseDTO.setDataCadastro(this.getDataCadastro());
+        pessoaFisicaResponseDTO.setTipoCliente(this.getTipoCliente());
+        return pessoaFisicaResponseDTO;
     }
 
     public void setNome(String nome) {

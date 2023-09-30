@@ -1,15 +1,11 @@
 package com.example.demo.model;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Getter
 @Entity
 @Table(name = "CLIENTE")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -27,8 +23,6 @@ public abstract class Cliente {
     @Column(name = "data_cadastro")
     @CreatedDate
     LocalDateTime dataCadastro;
-    @NotEmpty(message = "O MCC é obrigatório.")
-    @Size(max = 4, message = "O MCC deve ter no máximo 4 caracteres.")
     String mcc;
 
     protected Cliente(TipoCliente tipoCliente, String mcc) {
@@ -45,21 +39,28 @@ public abstract class Cliente {
         return UUID.randomUUID();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public void setTipoCliente(TipoCliente tipoCliente) {
         this.tipoCliente = tipoCliente;
-    }
-
-    public void setDataCadastro(LocalDateTime dataCadastro) {
-        this.dataCadastro = dataCadastro;
     }
 
     public void setMcc(String mcc) {
         this.mcc = mcc;
     }
 
+    public TipoCliente getTipoCliente() {
+        return tipoCliente;
+    }
 
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public String getMcc() {
+        return mcc;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
