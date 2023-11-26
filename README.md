@@ -1,4 +1,4 @@
-# Aplicação Spring Boot de Pré-Cadastro de Clientes (Apenas o desafío 01)
+# Aplicação Spring Boot de Pré-Cadastro de Clientes (Curso Ada Tech)
 
 > Este README fornece instruções básicas sobre como configurar e executar a aplicação Spring Boot de Pré-Cadastro de Clientes
 
